@@ -1,0 +1,38 @@
+﻿<Window x:Class="PCL_CE_Patcher.AuthWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="验证" Height="200" Width="450"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        FocusManager.FocusedElement="{Binding ElementName=TxtInput}">
+
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- 标题 -->
+        <TextBlock Grid.Row="0" Text="请输入本项目地址以继续使用..." 
+                   FontSize="15" FontWeight="Bold" Margin="0,0,0,15"/>
+
+        <!-- 输入框区域 (带水印) -->
+        <Grid Grid.Row="1" VerticalAlignment="Center">
+            <!-- 水印文字 -->
+            <TextBlock x:Name="Placeholder" Text="https://github.com/..." 
+                       Foreground="LightGray" VerticalAlignment="Center" Margin="5,0,0,0"
+                       IsHitTestVisible="False"/>
+
+            <!-- 输入框 (背景透明以便显示水印) -->
+            <TextBox x:Name="TxtInput" Height="30" VerticalContentAlignment="Center" 
+                     Background="Transparent" Padding="2,0,2,0"
+                     TextChanged="TxtInput_TextChanged"/>
+        </Grid>
+
+        <!-- 底部按钮 -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,0">
+            <TextBlock x:Name="LblError" Text="" Foreground="Red" VerticalAlignment="Center" Margin="0,0,10,0"/>
+            <Button x:Name="BtnVerify" Content="验证并继续" Width="100" Height="30" Click="BtnVerify_Click" IsDefault="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

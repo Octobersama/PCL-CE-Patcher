@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationManifest>app.manifest</ApplicationManifest> <!-- 关联清单文件 -->
+    <AssemblyName>PCL CE Patcher</AssemblyName>
+    <AssemblyTitle>PCL CE Patcher</AssemblyTitle>
+    <RootNamespace>PCL_CE_Patcher</RootNamespace>
+    <PackageId>PCL CE Patcher</PackageId>
+    <Authors>OctoberSama</Authors>
+    <Product>PCL CE Patcher</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AsmResolver.DotNet" Version="5.5.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- 关键：资源路径变更 -->
+    <EmbeddedResource Include="Assets\CleanHost.exe" />
+  </ItemGroup>
+
+</Project>
