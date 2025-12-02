@@ -8,7 +8,7 @@ namespace PCL_CE_Patcher
 {
     public partial class AuthWindow : Window
     {
-        private const string TargetUrl = "https://github.com/Octobersama/PCL CE Patcher";
+        private const string TargetUrl = "https://github.com/Octobersama/PCL-CE-Patcher";
 
         public AuthWindow()
         {

@@ -146,7 +146,7 @@ namespace PCL_CE_Patcher
 
         private void PrintHelp()
         {
-            Console.WriteLine("PCE Patcher - Command Line Interface");
+            Console.WriteLine("PCL Patcher - Command Line Interface");
             Console.WriteLine("Usage:");
             Console.WriteLine("  PCL_CE_Patcher.exe <input_file> [output_file]");
             Console.WriteLine("Options:");

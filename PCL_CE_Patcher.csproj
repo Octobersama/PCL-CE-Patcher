@@ -13,7 +13,12 @@
     <PackageId>PCL CE Patcher</PackageId>
     <Authors>OctoberSama</Authors>
     <Product>PCL CE Patcher</Product>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Resources\icon.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AsmResolver.DotNet" Version="5.5.1" />

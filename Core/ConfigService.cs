@@ -14,7 +14,7 @@ namespace PCL_CE_Patcher.Core
     {
         private static readonly string AppDataPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "PCE CE Patcher");
+            "PCL CE Patcher");
 
         private static readonly string ConfigPath = Path.Combine(AppDataPath, "config.json");
         private static readonly string LogPath = Path.Combine(AppDataPath, "latest.log");
