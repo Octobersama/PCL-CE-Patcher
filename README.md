@@ -65,3 +65,6 @@ PCL CE Patcher 是一个针对 **PCL CE (社区版)** 的自动化修补工具�
     该文件遵循 **Microsoft Software License Terms**，仅作为重打包模板使用，不属于本项目源码的 MIT 协议覆盖范围。  
     
     更多详情请参阅 [Assets/README.md](Assets/README.md)。
+
+## Stars
+[![Stargazers over time](https://starchart.cc/Octobersama/PCL-CE-Patcher.svg?variant=adaptive)](https://starchart.cc/Octobersama/PCL-CE-Patcher)
