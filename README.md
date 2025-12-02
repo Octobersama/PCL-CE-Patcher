@@ -67,4 +67,4 @@ PCL CE Patcher 是一个针对 **PCL CE (社区版)** 的自动化修补工具�
     更多详情请参阅 [Assets/README.md](Assets/README.md)。
 
 ## Stars
-[![Stargazers over time](https://starchart.cc/Octobersama/PCL-CE-Patcher.svg?variant=adaptive)](https://starchart.cc/Octobersama/PCL-CE-Patcher)
+[![Stargazers over time](https://starchart.cc/Octobersama/PCL-CE-Patcher.svg?variant=dark)](https://starchart.cc/Octobersama/PCL-CE-Patcher)
