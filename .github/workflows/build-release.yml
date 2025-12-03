@@ -25,35 +25,75 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore PCL_CE_Patcher.csproj
 
-    # 1. -p:SelfContained=false : 强制依赖框架 (体积小，需用户装运行时)
-    # 2. -p:IncludeNativeLibrariesForSelfExtract=true : 把 wpfgfx 等原生库也塞进 EXE 里
-    # 3. -p:DebugType=None : 不生成 pdb 调试文件
-    # 4. -p:DebugSymbols=false : 禁止调试符号
+    # 步骤 1：根据是否为 Tag，设置编译参数变量
+
+    - name: Set Build Options
+      id: options
+      shell: pwsh
+      run: |
+        if ("${{ github.ref }}".StartsWith("refs/tags/")) {
+          echo "IS_RELEASE=true" >> $env:GITHUB_ENV
+          # Release 版：无 PDB，优化体积
+          echo "BUILD_ARGS=-p:DebugType=None -p:DebugSymbols=false" >> $env:GITHUB_ENV
+        } else {
+          echo "IS_RELEASE=false" >> $env:GITHUB_ENV
+          # CI 版：保留 PDB，方便调试报错
+          echo "BUILD_ARGS=-p:DebugType=portable -p:DebugSymbols=true" >> $env:GITHUB_ENV
+        }
+
+    # 步骤 2：编译 (加入了 Encoding=UTF-8 修复乱码和Patch失败问题)
+
     - name: Publish Patcher
       run: |
-        dotnet publish PCL_CE_Patcher.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:DebugSymbols=false -o ./output
+        dotnet publish PCL_CE_Patcher.csproj -c Release -r win-x64 `
+        --self-contained false `
+        -p:PublishSingleFile=true `
+        -p:IncludeNativeLibrariesForSelfExtract=true `
+        -p:Encoding=UTF-8 `
+        ${{ env.BUILD_ARGS }} `
+        -o ./output
 
-    # 打包步骤
-    - name: Package
+    # 步骤 3：准备文件 (复制说明书等)
+
+    - name: Prepare Assets
       run: |
         copy LICENSE ./output/
         copy ThirdPartyNotices.txt ./output/
-        # 注意：这里我们只把 output 目录下的东西打包
-        # 这样生成的 zip 解压后就是 exe 和说明文件，没有多余目录
+        # 如果有 README 也可以复制进去
+        # copy README.md ./output/
+
+    # 步骤 4：打包逻辑分支
+    
+    # 情况 A: 如果是 Release (Tag)，我们需要手动打 Zip 包
+    - name: Zip for Release
+      if: env.IS_RELEASE == 'true'
+      run: |
         powershell Compress-Archive -Path ./output/* -DestinationPath PCL_CE_Patcher.zip
 
-    # 上传构建产物 (给 Action 页面下载用的)
-    # GitHub Action 下载 Artifact 时会自动套一层 zip，这是平台特性，无法消除
-    # 所以你下载到的会是 Artifact.zip -> PCL_CE_Patcher.zip -> 内容
-    - name: Upload Build Artifact
+    # 步骤 5：上传产物分支
+
+    # 情况 A: 如果是 Release，上传打好的 Zip 给 Action 页面备份
+    - name: Upload Release Artifact
+      if: env.IS_RELEASE == 'true'
       uses: actions/upload-artifact@v4
       with:
-        name: PCL_CE_Patcher_Release_Package
+        name: PCL_CE_Patcher_Release_Pkg
         path: PCL_CE_Patcher.zip
         retention-days: 90
 
-    # 发布 Release (只有打 Tag 时执行)
-    - name: Upload to Release
+    # 情况 B: 如果是普通 CI，直接上传 output 文件夹
+    # Action 会自动帮你压缩成zip
+    # 这样你下载解压后，里面包含 exe 和 pdb
+    - name: Upload CI Artifact
+      if: env.IS_RELEASE == 'false'
+      uses: actions/upload-artifact@v4
+      with:
+        name: PCL_CE_Patcher_CI_Build
+        path: ./output/*
+        retention-days: 7
+
+    # 步骤 6：发布 Release (仅 Tag 触发)
+    - name: Upload to Release Page
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
