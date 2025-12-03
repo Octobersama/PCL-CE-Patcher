@@ -14,6 +14,7 @@
 	<Version>1.0.0</Version>
     <Authors>OctoberSama</Authors>
     <Product>PCL CE Patcher</Product>
+	<Copyright>Copyright © 2025 OctoberSama</Copyright>
     <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
