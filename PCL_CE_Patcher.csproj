@@ -11,6 +11,7 @@
     <AssemblyTitle>PCL CE Patcher</AssemblyTitle>
     <RootNamespace>PCL_CE_Patcher</RootNamespace>
     <PackageId>PCL CE Patcher</PackageId>
+	<Version>1.0.0</Version>
     <Authors>OctoberSama</Authors>
     <Product>PCL CE Patcher</Product>
     <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
@@ -27,6 +28,10 @@
   <ItemGroup>
     <!-- 关键：资源路径变更 -->
     <EmbeddedResource Include="Assets\CleanHost.exe" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include=".github\workflows\" />
   </ItemGroup>
 
 </Project>

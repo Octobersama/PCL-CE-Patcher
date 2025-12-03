@@ -1,0 +1,52 @@
+name: Build and Release
+
+on:
+  # 1. 允许手动点击按钮触发
+  workflow_dispatch:
+  # 2. 每次推送到 master 分支时触发 (只编译测试，不发版)
+  push:
+    branches: [ "master" ]
+    tags: [ "v*" ] # 3. 打标签时触发 (编译并发版)
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    # 这里的权限设置很重要，允许 Action 上传文件到 Release
+    permissions:
+      contents: write 
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore PCL_CE_Patcher/PCL_CE_Patcher.csproj
+
+    # 编译生成 EXE
+    - name: Build
+      run: dotnet publish PCL_CE_Patcher/PCL_CE_Patcher.csproj -c Release -r win-x64 -p:PublishSingleFile=true --self-contained false -o ./output
+
+    # 只有当这是 Tag 触发，或者手动触发时，才打包上传
+    # 普通的 Push 只跑到上面那步就结束了，用来验证代码没写挂
+    - name: Package and Release
+      if: startsWith(github.ref, 'refs/tags/') || github.event_name == 'workflow_dispatch'
+      run: |
+        copy LICENSE ./output/
+        copy ThirdPartyNotices.txt ./output/
+        powershell Compress-Archive -Path ./output/* -DestinationPath PCL_CE_Patcher.zip
+
+    # 上传到 Release (自动挂载到你刚才在网页填好的 Release 下面)
+    - name: Upload to Release
+      uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: PCL_CE_Patcher.zip
+        # 这一行如果不写，默认就是 false (正式版)
+        # 如果你想通过 yaml 控制预发布，可以写 prerelease: true
+        # 但推荐你直接在网页发版时勾选，这里不用管
