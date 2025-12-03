@@ -1,12 +1,10 @@
 name: Build and Release
 
 on:
-  # 1. 允许手动点击按钮触发
   workflow_dispatch:
-  # 2. 每次推送到 master 分支时触发 (编译 + 生成Artifacts，但不发Release)
   push:
     branches: [ "master" ]
-    tags: [ "v*" ] # 3. 打标签时触发 (编译 + 生成Artifacts + 发Release)
+    tags: [ "v*" ]
 
 jobs:
   build:
@@ -27,29 +25,34 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore PCL_CE_Patcher.csproj
 
-    # 编译生成 EXE
-    - name: Build
-      run: dotnet publish PCL_CE_Patcher.csproj -c Release -r win-x64 -p:PublishSingleFile=true --self-contained false -o ./output
+    # 1. -p:SelfContained=false : 强制依赖框架 (体积小，需用户装运行时)
+    # 2. -p:IncludeNativeLibrariesForSelfExtract=true : 把 wpfgfx 等原生库也塞进 EXE 里
+    # 3. -p:DebugType=None : 不生成 pdb 调试文件
+    # 4. -p:DebugSymbols=false : 禁止调试符号
+    - name: Publish Patcher
+      run: |
+        dotnet publish PCL_CE_Patcher.csproj -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -p:DebugSymbols=false -o ./output
 
-    # 【修改点 1】：移除了 if 条件
-    # 现在无论是什么触发方式，都会执行打包操作，为了下一步上传做准备
+    # 打包步骤
     - name: Package
       run: |
         copy LICENSE ./output/
         copy ThirdPartyNotices.txt ./output/
+        # 注意：这里我们只把 output 目录下的东西打包
+        # 这样生成的 zip 解压后就是 exe 和说明文件，没有多余目录
         powershell Compress-Archive -Path ./output/* -DestinationPath PCL_CE_Patcher.zip
 
-    # 【修改点 2】：新增上传 Artifact 步骤
-    # 每次构建成功后，都会把 zip 上传到 Action 的 Summary 页面供你下载测试
+    # 上传构建产物 (给 Action 页面下载用的)
+    # GitHub Action 下载 Artifact 时会自动套一层 zip，这是平台特性，无法消除
+    # 所以你下载到的会是 Artifact.zip -> PCL_CE_Patcher.zip -> 内容
     - name: Upload Build Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: PCL_CE_Patcher_Build # Action 页面上显示的附件名称
-        path: PCL_CE_Patcher.zip   # 要上传的文件
-        retention-days: 90         # 文件保留天数
+        name: PCL_CE_Patcher_Release_Package
+        path: PCL_CE_Patcher.zip
+        retention-days: 90
 
-    # 【修改点 3】：Release 步骤保持不变
-    # 只有当这是 Tag 触发时，才把上面打好的包发布到 Releases 页面
+    # 发布 Release (只有打 Tag 时执行)
     - name: Upload to Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
