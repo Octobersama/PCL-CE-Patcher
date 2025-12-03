@@ -26,11 +26,11 @@ jobs:
         dotnet-version: '8.0.x'
 
     - name: Restore dependencies
-      run: dotnet restore PCL_CE_Patcher/PCL_CE_Patcher.csproj
+      run: dotnet restore PCL_CE_Patcher.csproj
 
     # 编译生成 EXE
     - name: Build
-      run: dotnet publish PCL_CE_Patcher/PCL_CE_Patcher.csproj -c Release -r win-x64 -p:PublishSingleFile=true --self-contained false -o ./output
+      run: dotnet publish PCL_CE_Patcher.csproj -c Release -r win-x64 -p:PublishSingleFile=true --self-contained false -o ./output
 
     # 只有当这是 Tag 触发，或者手动触发时，才打包上传
     # 普通的 Push 只跑到上面那步就结束了，用来验证代码没写挂
