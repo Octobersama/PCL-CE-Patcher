@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -36,7 +36,7 @@ namespace PCL_CE_Patcher.Core
                 // 1. Load Host
                 ConfigService.Log("[Service] Loading CleanHost resource...");
                 var cleanPe = LoadCleanHost();
-                if (cleanPe == null) throw new Exception("ÄÚ²¿´íÎó£ºÎŞ·¨¼ÓÔØ Assets/CleanHost.exe");
+                if (cleanPe == null) throw new Exception("å†…éƒ¨é”™è¯¯ï¼šæ— æ³•åŠ è½½ Assets/CleanHost.exe");
 
                 // 2. Extract
                 ConfigService.Log("[Service] Extracting bundle...");
@@ -61,7 +61,7 @@ namespace PCL_CE_Patcher.Core
 
                 // 3. Patch DLL
                 string dllPath = Path.Combine(tempDir, mainDllName);
-                if (!File.Exists(dllPath)) throw new FileNotFoundException($"½â°üÊı¾İÒì³££¬Î´ÕÒµ½ {mainDllName}");
+                if (!File.Exists(dllPath)) throw new FileNotFoundException($"è§£åŒ…æ•°æ®å¼‚å¸¸ï¼Œæœªæ‰¾åˆ° {mainDllName}");
 
                 ConfigService.Log("[Service] Applying patches...");
                 var module = ModuleDefinition.FromFile(dllPath);
@@ -144,7 +144,7 @@ namespace PCL_CE_Patcher.Core
         private PEFile? LoadCleanHost()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            // È·±£ÕâÀïµÄ×ÊÔ´Ãû³ÆºÍÄãµÄÏîÄ¿½á¹¹Ò»ÖÂ
+            // ç¡®ä¿è¿™é‡Œçš„èµ„æºåç§°å’Œä½ çš„é¡¹ç›®ç»“æ„ä¸€è‡´
             string resourceName = "PCL_CE_Patcher.Assets.CleanHost.exe";
 
             using var stream = assembly.GetManifestResourceStream(resourceName);

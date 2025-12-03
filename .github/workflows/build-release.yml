@@ -1,4 +1,4 @@
-name: Build and Release
+﻿name: Build and Release
 
 on:
   workflow_dispatch:
@@ -25,65 +25,54 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore PCL_CE_Patcher.csproj
 
-    # 步骤 1：根据是否为 Tag，设置编译参数变量
-
+    # =========================================================
+    # 步骤 1：根据触发类型设置变量 (控制 PDB)
+    # =========================================================
     - name: Set Build Options
       id: options
       shell: pwsh
       run: |
         if ("${{ github.ref }}".StartsWith("refs/tags/")) {
           echo "IS_RELEASE=true" >> $env:GITHUB_ENV
-          # Release 版：无 PDB，优化体积
+          # Release: 无调试符号，极致瘦身
           echo "BUILD_ARGS=-p:DebugType=None -p:DebugSymbols=false" >> $env:GITHUB_ENV
         } else {
           echo "IS_RELEASE=false" >> $env:GITHUB_ENV
-          # CI 版：保留 PDB，方便调试报错
+          # CI: 保留调试符号，方便查错
           echo "BUILD_ARGS=-p:DebugType=portable -p:DebugSymbols=true" >> $env:GITHUB_ENV
         }
 
-    # 步骤 2：编译 (加入了 Encoding=UTF-8 修复乱码和Patch失败问题)
-
+    # =========================================================
+    # 步骤 2：编译 (全靠参数控制)
+    # =========================================================
     - name: Publish Patcher
       run: |
         dotnet publish PCL_CE_Patcher.csproj -c Release -r win-x64 `
-        --self-contained false `
+        --no-self-contained `
         -p:PublishSingleFile=true `
         -p:IncludeNativeLibrariesForSelfExtract=true `
-        -p:Encoding=UTF-8 `
         ${{ env.BUILD_ARGS }} `
         -o ./output
 
-    # 步骤 3：准备文件 (复制说明书等)
-
+    # =========================================================
+    # 步骤 3：准备文件
+    # =========================================================
     - name: Prepare Assets
       run: |
         copy LICENSE ./output/
         copy ThirdPartyNotices.txt ./output/
-        # 如果有 README 也可以复制进去
-        # copy README.md ./output/
 
-    # 步骤 4：打包逻辑分支
+    # =========================================================
+    # 步骤 4：打包与上传
+    # =========================================================
     
-    # 情况 A: 如果是 Release (Tag)，我们需要手动打 Zip 包
+    # 场景 A: 正式发布 (Tag) -> 手动打 Zip
     - name: Zip for Release
       if: env.IS_RELEASE == 'true'
       run: |
         powershell Compress-Archive -Path ./output/* -DestinationPath PCL_CE_Patcher.zip
 
-    # 步骤 5：上传产物分支
-
-    # 情况 A: 如果是 Release，上传打好的 Zip 给 Action 页面备份
-    - name: Upload Release Artifact
-      if: env.IS_RELEASE == 'true'
-      uses: actions/upload-artifact@v4
-      with:
-        name: PCL_CE_Patcher_Release_Pkg
-        path: PCL_CE_Patcher.zip
-        retention-days: 90
-
-    # 情况 B: 如果是普通 CI，直接上传 output 文件夹
-    # Action 会自动帮你压缩成zip
-    # 这样你下载解压后，里面包含 exe 和 pdb
+    # 场景 B: CI 测试 (Push) -> 上传文件夹 (Action会自动压成zip)
     - name: Upload CI Artifact
       if: env.IS_RELEASE == 'false'
       uses: actions/upload-artifact@v4
@@ -92,7 +81,18 @@ jobs:
         path: ./output/*
         retention-days: 7
 
-    # 步骤 6：发布 Release (仅 Tag 触发)
+    # 场景 A: 正式发布 -> 上传 Release 附件备用
+    - name: Upload Release Artifact
+      if: env.IS_RELEASE == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: PCL_CE_Patcher_Release_Pkg
+        path: PCL_CE_Patcher.zip
+        retention-days: 90
+
+    # =========================================================
+    # 步骤 5：发布到 GitHub Releases (仅 Tag)
+    # =========================================================
     - name: Upload to Release Page
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')

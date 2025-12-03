@@ -1,4 +1,4 @@
-using System.Linq;
+ï»¿using System.Linq;
 using AsmResolver.DotNet;
 using AsmResolver.PE.DotNet.Cil;
 
@@ -6,7 +6,7 @@ namespace PCL_CE_Patcher.Core.Patches
 {
     public class RemovePrecheckPatch : IPatch
     {
-        public string Name => "ÒÆ³ıÆô¶¯Ç°¼ì²é (Precheck)";
+        public string Name => "ç§»é™¤å¯åŠ¨å‰æ£€æŸ¥ (Precheck)";
 
         public bool Apply(ModuleDefinition module)
         {
@@ -20,7 +20,7 @@ namespace PCL_CE_Patcher.Core.Patches
             for (int i = 0; i < instructions.Count; i++)
             {
                 if (instructions[i].OpCode == CilOpCodes.Ldstr &&
-                    instructions[i].Operand?.ToString()?.Contains("Äã±ØĞëÏÈµÇÂ¼Õı°æÕËºÅ²ÅÄÜÆô¶¯ÓÎÏ·£¡") == true)
+                    instructions[i].Operand?.ToString()?.Contains("ä½ å¿…é¡»å…ˆç™»å½•æ­£ç‰ˆè´¦å·æ‰èƒ½å¯åŠ¨æ¸¸æˆï¼") == true)
                 {
                     if (i > 0)
                     {

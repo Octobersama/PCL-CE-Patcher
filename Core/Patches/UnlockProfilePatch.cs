@@ -1,4 +1,4 @@
-using System.Linq;
+ï»¿using System.Linq;
 using AsmResolver.DotNet;
 using AsmResolver.PE.DotNet.Cil;
 
@@ -6,7 +6,7 @@ namespace PCL_CE_Patcher.Core.Patches
 {
     public class UnlockProfilePatch : IPatch
     {
-        public string Name => "½âËøÀëÏß/µÚÈı·½µÇÂ¼ (CreateProfile)";
+        public string Name => "è§£é”ç¦»çº¿/ç¬¬ä¸‰æ–¹ç™»å½• (CreateProfile)";
 
         public bool Apply(ModuleDefinition module)
         {

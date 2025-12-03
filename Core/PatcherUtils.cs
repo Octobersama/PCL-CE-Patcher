@@ -1,4 +1,4 @@
-using AsmResolver.DotNet.Bundles;
+﻿using AsmResolver.DotNet.Bundles;
 
 namespace PCL_CE_Patcher.Core
 {

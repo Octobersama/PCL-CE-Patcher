@@ -1,4 +1,4 @@
-/* 
+﻿/* 
  * DEV ONLY: CLI Bypass Mechanism
  * Run this in your browser console to retrieve the magic key.
  */

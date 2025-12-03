@@ -1,4 +1,4 @@
-# 第三方组件说明 (Third-Party Component): CleanHost.exe
+﻿# 第三方组件说明 (Third-Party Component): CleanHost.exe
 
 本目录包含 `CleanHost.exe`，它是 Microsoft .NET SDK 分发的原生 `apphost.exe` 二进制文件的副本（已重命名）。
 This directory contains `CleanHost.exe`, which is a renamed copy of the native `apphost.exe` binary distributed with the Microsoft .NET SDK.
