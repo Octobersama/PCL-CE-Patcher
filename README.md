@@ -37,7 +37,7 @@ PCL CE Patcher 是一个针对 **PCL CE (社区版)** 的自动化修补工具�
 
 在软件的主界面中，选择一个<code>2.13.4-beta.2</code>版本（限制在此版本中首次加入）之后的原版 PCL CE 二进制文件，点击修补按钮。
 * 若修补成功，您可以在选择的文件同目录找到一个文件名带有<code>_Patched</code>的文件。运行它，在预期的情况下限制将被解除。
-* 若修补失败或修补后无效/遇到bug，请您将截图/复现录屏、详细的PCL CE和Patcher版本信息、您的运行环境信息、<code>%LocalAppData%\PCL CE Patcher </code> 目录下的 <code>latest.log</code> 一并通过 [issues](https://github.com/Octobersama/PCL-CE-Patcher/issues) 提交给我。我可能会对其进行修复。
+* 若修补失败或修补后无效/遇到bug，请您将截图/复现录屏、详细的PCL CE和Patcher版本信息、您的运行环境信息、<code>%LocalAppData%\PCL CE Patcher</code> 目录下的 <code>latest.log</code> 一并通过 [issues](https://github.com/Octobersama/PCL-CE-Patcher/issues) 提交给我。我可能会对其进行修复。
 
 ### CUI 模式
 您可以通过命令行终端使用本工具，使用前需提前打开GUI通过[上述验证](#使用方法)。或者...
@@ -47,6 +47,8 @@ PCL CE Patcher 是一个针对 **PCL CE (社区版)** 的自动化修补工具�
 
 其中 <code>input_file</code> 是将修补文件的地址，<code>output_file</code> 是修补后输出的地址。
 * <code>output_file</code> 可忽略，忽略时输出目录与 <code>input_file</code> 的目录相同，文件名为<code>原文件名</code> + <code>_Patched</code>。
+
+在您已通过[上述验证](#使用方法)的情况下，也可以直接把需要修补的文件拖拽到本工具的文件上。此时将使用 CUI 模式自动修补，效果等同于仅填写 <code>input_file</code>。
 
 ## 许可证与致谢
 
